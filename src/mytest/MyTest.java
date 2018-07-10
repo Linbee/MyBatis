@@ -14,7 +14,7 @@ import pojo.Employee;
 public class MyTest {
 
 	/*
-	 * 根据xml配文件，创建一个SqlSessionFactory对象
+	 * 
 	*/
 	@Test
 	public void start() throws IOException
