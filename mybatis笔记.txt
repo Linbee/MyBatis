@@ -1,0 +1,16 @@
+Mybatis学习笔记
+持久层框架 数据库交互
+Hibernate 全自动全映射ORM(Object Relation Mapping)框架 旨在消除sql HQL编写sql语句
+Mybatis 半自动轻量级框架 sql与java编码分离，sql受开发人员控制
+
+在github下载mybatis
+
+http://www.mybatis.org/mybatis-3 文档地址
+https://github.com/mybatis/mybatis-3/releases jar包下载地址
+https://mvnrepository.com/artifact/mysql/mysql-connector-java jdbc 下载
+
+课外发现
+source folder 和 folder 的区别
+source folder 所有Java源文件都会被时时编译成class文件。对于JavaSE的项目会被编译到项目目录下的bin目录下，对于JavaEE项目会被编译到相应的/WEB-INF/classes文件
+夹中 其他文件也会移到到相应的目录下
+folder 文件夹

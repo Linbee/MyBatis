@@ -9,12 +9,20 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
 
+import dao.EmployeeDao;
 import pojo.Employee;
 
 public class MyTest {
 
 	/*
-	 * 
+	 * 根据xml配置文件，创建SqlSessionFactory对象
+	 * 		有数据源的一些运行环境信息
+	 * sql映射文件，配置了每一个sql，以及sql的封装规则等
+	 * 将sql映射文件注册证全局配置文件中
+	 * 代码编写
+	 * 		跟去全局配置文件得到SqlSessionFactory
+	 * 		使用sqlSession工厂，获取到sqlSession对象使用来完成增删改查
+	 * 		一个sqlSession就是代表着和数据库的一次会话，用完需要关闭
 	*/
 	@Test
 	public void start() throws IOException
@@ -31,5 +39,51 @@ public class MyTest {
 		
 		System.out.println(emp);
 		
+	}
+	
+	public SqlSession getSqlSession()
+	{
+		SqlSession sqlSession=null;
+		try
+		{
+			String resource ="mybatis-config.xml";
+			InputStream inputStream=Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory =new SqlSessionFactoryBuilder().build(inputStream);
+			sqlSession=sqlSessionFactory.openSession();
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		return sqlSession;
+	}
+	
+	
+	@Test
+	public void interfaceTest()
+	{
+		SqlSession sqlSession=null;
+		try
+		{	
+			/*创建sqlSessionFactory 获取sqlSession*/
+			String resource="mybatis-config.xml";
+			InputStream inputStream=Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory=new SqlSessionFactoryBuilder().build(inputStream);
+			sqlSession=sqlSessionFactory.openSession();
+		
+			
+			/*mybaits的接口编程
+			 * 
+			*/
+			EmployeeDao employeeDao=sqlSession.getMapper(EmployeeDao.class);
+			Employee emp=employeeDao.getEmployeeById(1);
+			System.out.println(emp);
+		}
+		catch(Exception e)
+		{
+			
+		}
+		finally
+		{
+			sqlSession.close();
+		}
 	}
 }
