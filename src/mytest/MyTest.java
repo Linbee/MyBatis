@@ -128,4 +128,27 @@ public class MyTest {
 		}
 	}
 	
+	@Test
+	public void testGeneratedKey()
+	{
+		try
+		{
+			String resource ="mybatis-config.xml";
+			InputStream inputStream=Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory=new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession sqlSession =sqlSessionFactory.openSession(true);
+			
+			EmployeeDao employeeDao=sqlSession.getMapper(EmployeeDao.class);
+			
+			Employee newEmployee = new Employee("Jery","jery@mail.com","0");
+			employeeDao.addEmployee(newEmployee);
+			System.out.println(newEmployee.getId());
+			
+		}catch (Exception e) {
+			// TODO: handle exception
+		}finally {
+			
+		}
+	}
+	
 }
