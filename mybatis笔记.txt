@@ -20,8 +20,57 @@ mybatis接口编程步骤
 	1 实体类对应的映射文件
 	2 实体类的接口方法
 	3 将实体类的映射文件中的 mapper：namespace 与接口类绑定 namespace=接口类名
-	4 将实体类的映射文件中的方法id 跟换为接口类中的方法名
+	4 将实体类的映射文件中的方法id 与 为接口类中的方法名 相同
 	
 	5用sqlSession的getMapper方法初始化对应的接口类  eg：Objece employeeDao=sqlSession.getMapper(Object.class);
 	6调用接口类对应的方法
 dtd 文档类型定义(Document Type Definition)是一套为了进行程序间的数据交换而建立的关于标记符的语法规则。文档可根据某种DTD语法规则验证格式是否符合此规则。文档类型定义也可用做保证标准通用标记语言、可扩展标记语言文档格式的合法性，可通过比较文档和文档类型定义文件来检查文档是否符合规范，元素和标签使用是否正确。
+
+MyBatis全局配置文件
+	properties 用来引入外部的properties文件
+		:resource 用来引入类路径下的资源
+		:url		 用来引入网络路径或者磁盘路径下的资源
+	
+	settings 一个重要的标签 ！
+		setting 用来设置每一个设置项
+			:name 项名
+			:value false/true
+
+	typeAliases 为java类起别名 别名不区分大小写
+		typeAlias
+			:type 需要起别名的类的全类名 默认别名是类名小写
+			:alias 新的别名
+		package
+			:name 指定包名（当前包以及下面的所有的后代包的每一个类起一个默认的别名 类名小写） 别名有可能冲突报错
+			在类使用@Alias注解 为某个类指定新的别名 解决冲突
+	typeHandler 映射java的数据类型和sql的数据类型
+	
+	environments 配置多种环境
+		:default 切换环境
+		environment 配置一个具体的环境信息
+			transactionManager 事务管理器
+				:id 当前环境的唯一标示
+				:type 事务管理器的类型 JDBC|MANAGED
+					  自定义事务管理器，实现TransactionFactory接口 type指定的全类名
+			dataSource  数据源
+				:type 数据源类型 UNPOOLED|POOLED|JNDI 不使用连接池 使用连接池 使用JNDI
+				自定义数据源 实现DataSourceFactory接口
+	
+	databaseldProvider 使得MyBatis支持多种不同数据库 
+		:type type=DB_VENDOR" 得到数据库厂商的标识
+		property
+			:name 数据库厂商标识
+			:vallue 标识别名
+	
+	mappers 将sql映射注册到全局配置中
+		mapper 注册一个sql映射
+			:resource 引用类路径下的sql映射文件
+			:url 引用网路路径或者磁盘路径下的sql映射文件
+			
+			:class 引用接口
+				1.有sql映射文件,映射文件必须和接口同名,并且放在与接口同一路径下
+				2.没有sql映射文件,所有的sql都是利用注解写在接口上
+		package
+			:name 包名
+MyBatis 映射文件
+	MyBatis支持返回 boolean int long 

@@ -5,6 +5,18 @@ public class Employee {
 	private String lastName;
 	private String email;
 	private String gender;
+	
+	public Employee()
+	{
+		
+	}
+	
+	public Employee(String lastName, String email, String gender) {
+		super();
+		this.lastName = lastName;
+		this.email = email;
+		this.gender = gender;
+	}
 	public Integer getId() {
 		return id;
 	}

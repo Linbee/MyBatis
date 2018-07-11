@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import dao.EmployeeDao;
 import pojo.Employee;
+import pojo.EmployeeMapperAnnotation;
 
 public class MyTest {
 
@@ -86,4 +87,45 @@ public class MyTest {
 			sqlSession.close();
 		}
 	}
+	
+	@Test
+	public void testAnnotation()
+	{
+		SqlSession sqlSession=getSqlSession();
+		EmployeeMapperAnnotation employeeMapperAnnotation= sqlSession.getMapper(EmployeeMapperAnnotation.class);
+		System.out.println(employeeMapperAnnotation.getEmpById(1));
+	}
+	
+	@Test
+	public void testCRUD()
+	{
+		SqlSession sqlSession = null;
+		try
+		{
+			String resource="mybatis-config.xml";
+			InputStream inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory=new SqlSessionFactoryBuilder().build(inputStream);
+			sqlSession = sqlSessionFactory.openSession(true); //开启自动提交
+			
+			EmployeeDao employeeDao=sqlSession.getMapper(EmployeeDao.class);
+			Employee emp=employeeDao.getEmployeeById(1);
+			
+			//employeeDao.addEmployee(new Employee("sccc","sccc@mail.com","0"));
+			
+			Employee old = employeeDao.getEmployeeById(1);
+			old.setEmail("oldtom33@mail.com");
+			old.setLastName("old_Tom");
+			employeeDao.updateEmployee(old);
+			
+			employeeDao.deleteEmployeeById(3);
+			
+		
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		finally {
+			sqlSession.close();
+		}
+	}
+	
 }
