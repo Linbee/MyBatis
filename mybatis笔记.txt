@@ -14,3 +14,14 @@ source folder 和 folder 的区别
 source folder 所有Java源文件都会被时时编译成class文件。对于JavaSE的项目会被编译到项目目录下的bin目录下，对于JavaEE项目会被编译到相应的/WEB-INF/classes文件
 夹中 其他文件也会移到到相应的目录下
 folder 文件夹
+
+2018 7 11
+mybatis接口编程步骤
+	1 实体类对应的映射文件
+	2 实体类的接口方法
+	3 将实体类的映射文件中的 mapper：namespace 与接口类绑定 namespace=接口类名
+	4 将实体类的映射文件中的方法id 跟换为接口类中的方法名
+	
+	5用sqlSession的getMapper方法初始化对应的接口类  eg：Objece employeeDao=sqlSession.getMapper(Object.class);
+	6调用接口类对应的方法
+dtd 文档类型定义(Document Type Definition)是一套为了进行程序间的数据交换而建立的关于标记符的语法规则。文档可根据某种DTD语法规则验证格式是否符合此规则。文档类型定义也可用做保证标准通用标记语言、可扩展标记语言文档格式的合法性，可通过比较文档和文档类型定义文件来检查文档是否符合规范，元素和标签使用是否正确。
