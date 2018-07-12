@@ -6,6 +6,32 @@
 	<!-- namespace 名称空间 ,用来绑定需要实现的接口
 	-->
 	
+	<select id="getEmployeeByLastNameLikeReturnMap" resultType="pojo.Employee">
+		select * from tbl_employee where last_name like #{lastName}
+	</select>
+	
+	<!-- MyBatis为常用的数据类型齐了别名 可直接填map -->
+	<select id="getEmployeeByIdReturnMap" resultType="map">
+		select * from tbl_employee where id=#{id}
+	</select>
+	
+	<select id="getEmployeeByLastName" resultType="pojo.Employee">
+		select * from tbl_employee where last_name=#{lastName}
+	</select>
+	
+	<select id="getEmployeeByIdAndTableName" resultType="pojo.Employee">
+		select * from ${tableName} where id=#{id}
+	</select>
+	
+	<select id="getEmployeeByPojo" resultType="pojo.Employee">
+		select * from tbl_employee 
+		where id=#{id} and last_name=#{lastName}
+	</select>
+	
+	<select id="getEmployeeByIdAndLastName" resultType="pojo.Employee">
+		select * from tbl_employee 
+		where id=#{id} and last_name=#{lastName}
+	</select>
 	
 	<select id="getEmployeeById" resultType="pojo.Employee" databaseId="mysql">
 		select * from tbl_employee where id=#{id}	

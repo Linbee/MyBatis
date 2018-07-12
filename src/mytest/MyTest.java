@@ -2,6 +2,9 @@ package mytest;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -151,4 +154,76 @@ public class MyTest {
 		}
 	}
 	
+	
+	@Test
+	public void testParameters()
+	{
+		SqlSession sqlSession = getSqlSession();
+		EmployeeDao employeeDao = sqlSession.getMapper(EmployeeDao.class);
+		Employee temp= employeeDao.getEmployeeById(2);
+		System.out.println(temp);
+		
+		temp=employeeDao.getEmployeeByIdAndLastName(2, "sccc");
+		
+		temp.setId(5);
+		temp.setLastName("Jery");
+		
+		temp=employeeDao.getEmployeeByPojo(temp);
+		System.out.println(temp);
+		
+		sqlSession.commit();
+	}
+	
+	@Test
+	public void testSelectByMap()
+	{
+		try
+		{
+			String resource="mybatis-config.xml";
+			InputStream inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession sqlSession = sqlSessionFactory.openSession(true);
+			
+			EmployeeDao employeeDao = sqlSession.getMapper(EmployeeDao.class);
+			Map<String,Object> info = new HashMap<>();
+			info.put("tableName","tbl_employee");
+			info.put("id",1);
+			Employee temp = employeeDao.getEmployeeByIdAndTableName(info);
+			System.out.println(temp);
+			
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		finally {
+			
+		}
+	}
+	
+	@Test
+	public void testSelectOtherResultType()
+	{
+		try
+		{
+			String resource="mybatis-config.xml";
+			InputStream inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			SqlSession sqlSession = sqlSessionFactory.openSession(true);
+			
+			EmployeeDao employeeDao = sqlSession.getMapper(EmployeeDao.class);
+			List<Employee> list =employeeDao.getEmployeeByLastName("sccc");
+			System.out.println(list);
+			
+			Map<String,Object> testMap = employeeDao.getEmployeeByIdReturnMap(1);
+			System.out.println(testMap);
+			
+			Map<Integer,Employee> employeeList = employeeDao.getEmployeeByLastNameLikeReturnMap("%c%");
+			System.out.println(employeeList);
+			
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		finally {
+			
+		}
+	}
 }

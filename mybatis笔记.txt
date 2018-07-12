@@ -80,3 +80,54 @@ MyBatis 映射文件
 	insert 获取自增主键
 		:useGeneratedKeys="true"
 		:keyProperty="" 实体类对应的变量名;
+		
+2018 07 12 MyBatis参数处理
+	单个参数 MyBatis不会做任何处理
+	多个参数 默认多个参数会被封装成一个map
+			 key: param1 param2 ... paramN 或者参数的索引也可以
+			 value: 传入的参数值
+			 
+			 明确指定封装参数的map的key: @Param("id")
+			 eg public Employee getEmployeeByIdAndLastName(@Param("id")int id,@Param("lastName")String lastName);
+			 
+			POJO
+				如果多个参数正好是我们业务逻辑的数据模型(存在实体类) 我们就可以直接传入pojo
+				#{属性名},去出传入的pojo的属性值
+			
+			Map
+				如果过个参数不是业务模型中的数据,没有对应的pojo 不经常使用,我们可以直接传入map
+				#{key} 去出map中的值
+				
+				如果多个参数不是业务模型中的数据,但是经常使用,推荐来编写一个TO(Transfer Object) 数据传输对象 如 Page{int index,int size}
+				
+				如果是Collection(List Set)类型或者是数组也会特殊处理
+				,也是把传入的list或者数组封装在map中.
+				key: Collection (collection) 如果是List还可以使用Key(list) 数组(array)
+				eg: public Employee getEmpById(List<Integer> ids);
+						取第一个值 #{list[0]}
+						
+	#{}和${}的区别
+		#{} 是以预编译的形式,将参数设置到sql语句中 防止sql注入
+		${} 取出的值直接拼装到sql语句中; 会有安全问题
+				
+		原生jdbc不支持占位符的地方我们就可以使用${}进行取值
+		比如 分表,排序 
+				
+	#{}更丰富的用法
+		javaType jdbcType mode(存储过程) numericScale
+		resultMap typeHandler jdbcTypeName expression(待完善)
+				
+		jdbcType通常需要在某种特定的条件下被设置
+		在我们数据为null时,有些数据库可能不识别mybatis对null的处理,比如oracle
+		jdbcType OTHER 无效的类型 因为mybatis对所有的null都映射的是原生jdbc的OTHER类型
+					
+		有两种解决办法
+		1 #{email,jdbcType=NULL}
+		2.全局配置文件 jdbcTypeForNull=NULL
+		
+		:resultType 如果返回的是一个集合 要写集合中的元素类型 mybatis会自动添加到集合中
+		可以填写类型的别名 resultType="map"
+		
+		返回多条封装一个map Map<Integer,Object> key是这个记录的主键 value是对应的类
+		@MapKey("id") //告诉mybatis使用哪个属性作为map的key
+		public Map<Integer,Employee> getEmployeeByLastNameLikeReturnMap(String lastName);
