@@ -6,6 +6,20 @@
 	<!-- namespace 名称空间 ,用来绑定需要实现的接口
 	-->
 	
+	
+	
+	
+	
+	<!-- 自定义返回的结果集  在列名和属性名不同时确保映射正确 -->
+	<resultMap type="pojo.Employee" id="employee">
+		<id column="id" property="id"/>
+		<result column="last_name" property="lastName"/>
+	</resultMap>
+	<select id="getEmployeeByIdUseResultMap" resultMap="employee">
+		select * from tbl_employee where id=#{id}
+	</select>
+	
+	
 	<select id="getEmployeeByLastNameLikeReturnMap" resultType="pojo.Employee">
 		select * from tbl_employee where last_name like #{lastName}
 	</select>

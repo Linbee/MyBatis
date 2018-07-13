@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.EmployeeDao">
+
+	<!-- 多表级联查询的两种方式 01 02 -->
+
+	<resultMap type="pojo.EmployeePlus" id="employeePLus01">
+		<id column="id" property="id" />
+		<result column="last_name" property="lastName"></result>
+		<result column="email" property="email"></result>
+		<result column="gender" property="gender"></result>
+		<result column="depart_id" property="department.id"></result>
+		<result column="dept_name" property="department.departmentName"></result>
+	</resultMap>
+
+	<resultMap type="pojo.EmployeePlus" id="employeePLus02">
+		<id column="id" property="id" />
+		<result column="last_name" property="lastName"></result>
+		<result column="email" property="email"></result>
+		<result column="gender" property="gender"></result>
+		<association property="department"
+			javaType="pojo.Department">
+			<id column="id" property="id" />
+			<result column="dept_name" property="departmentName"></result>
+		</association>
+	</resultMap>
+
+	<select id="getEmployPlusById" resultMap="employeePLus02">
+		select e.id as id,
+		e.last_name as last_name,
+		e.email as email,
+		e.gender as gender,
+		d.id as
+		depart_id,
+		d.dept_name as dept_name
+		from tbl_employee e, tbl_dept d
+		where e.id=#{id}
+		and
+		d.id=e.dep_id
+	</select>
+
+	
+	<resultMap type="pojo.EmployeePlus" id="employeePLus03">
+		<id column="id" property="id" />
+		<result column="last_name" property="lastName"></result>
+		<result column="email" property="email"></result>
+		<result column="gender" property="gender"></result>
+		<association property="department" 
+		select="dao.DepartmentDao.getDepartmentById"
+		column="dep_id">
+		</association> 
+	</resultMap>
+
+	<select id="getEmployeePlusByStep"  resultMap="employeePLus03">
+		select * from tbl_employee where id=#{id}
+	</select>
+</mapper>
+

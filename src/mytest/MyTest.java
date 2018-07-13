@@ -12,9 +12,12 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
 
+import dao.DepartmentDao;
 import dao.EmployeeDao;
+import pojo.Department;
 import pojo.Employee;
 import pojo.EmployeeMapperAnnotation;
+import pojo.EmployeePlus;
 
 public class MyTest {
 
@@ -39,6 +42,8 @@ public class MyTest {
 	
 		Employee emp=openSession.selectOne("selectEmp",1);
 		
+		openSession.commit();
+		
 		openSession.close();
 		
 		System.out.println(emp);
@@ -53,7 +58,7 @@ public class MyTest {
 			String resource ="mybatis-config.xml";
 			InputStream inputStream=Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory =new SqlSessionFactoryBuilder().build(inputStream);
-			sqlSession=sqlSessionFactory.openSession();
+			sqlSession=sqlSessionFactory.openSession(true);
 		}catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -78,12 +83,13 @@ public class MyTest {
 			 * 
 			*/
 			EmployeeDao employeeDao=sqlSession.getMapper(EmployeeDao.class);
-			Employee emp=employeeDao.getEmployeeById(1);
+			Employee emp=employeeDao.getEmployeeById(7);
+			sqlSession.commit();
 			System.out.println(emp);
 		}
 		catch(Exception e)
 		{
-			
+			System.out.println(e);
 		}
 		finally
 		{
@@ -202,12 +208,14 @@ public class MyTest {
 	@Test
 	public void testSelectOtherResultType()
 	{
+		String resource="mybatis-config.xml";
+		
+		SqlSession sqlSession = null;
 		try
 		{
-			String resource="mybatis-config.xml";
 			InputStream inputStream = Resources.getResourceAsStream(resource);
 			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-			SqlSession sqlSession = sqlSessionFactory.openSession(true);
+			sqlSession= sqlSessionFactory.openSession(true);
 			
 			EmployeeDao employeeDao = sqlSession.getMapper(EmployeeDao.class);
 			List<Employee> list =employeeDao.getEmployeeByLastName("sccc");
@@ -223,7 +231,102 @@ public class MyTest {
 			// TODO: handle exception
 		}
 		finally {
+			sqlSession.close();
+		}
+	}
+	
+
+//	使用resultMap自定义返回的结果集 确保在列名和类的属性名不同时正确的映射
+	@Test
+	public void testSelectResultMap()
+	{
+		String resource="mybatis-config.xml";
+		
+		SqlSession sqlSession = null;
+		try
+		{
+			InputStream inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			sqlSession= sqlSessionFactory.openSession(true);
 			
+			EmployeeDao employeeDao = sqlSession.getMapper(EmployeeDao.class);
+			Employee temp = employeeDao.getEmployeeByIdUseResultMap(1);
+			System.out.println(temp);
+			
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		finally {
+			sqlSession.close();
+		}
+	}
+	
+//	关联属性 级联查询
+	@Test
+	public void testSelectResultMapAboutEmployPlus()
+	{
+		String resource="mybatis-config.xml";
+		
+		SqlSession sqlSession = null;
+		try
+		{
+			InputStream inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			sqlSession= sqlSessionFactory.openSession(true);
+			
+			EmployeeDao employeeDao = sqlSession.getMapper(EmployeeDao.class);
+			EmployeePlus temp = employeeDao.getEmployPlusById(7);
+			System.out.println(temp);
+			
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		finally {
+			sqlSession.close();
+		}
+	}
+	
+	
+	@Test
+	public void testAboutEmployPlusByStep()
+	{
+		String resource="mybatis-config.xml";
+		
+		SqlSession sqlSession = null;
+		try
+		{
+			InputStream inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			sqlSession= sqlSessionFactory.openSession(true);
+			
+			EmployeeDao employeeDao = sqlSession.getMapper(EmployeeDao.class);
+			EmployeePlus temp = employeeDao.getEmployeePlusByStep(7);
+			System.out.println(temp);
+			
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		finally {
+			sqlSession.close();
+		}
+	}
+
+// 部门查询测试
+	@Test
+	public void getDepartmentById()
+	{
+		SqlSession sqlSession=getSqlSession();
+		
+		try
+		{
+			DepartmentDao departmentDao= sqlSession.getMapper(DepartmentDao.class);
+			Department department=departmentDao.getDepartmentById(1);
+			System.out.println(department);
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		finally {
+			sqlSession.clearCache();
 		}
 	}
 }

@@ -66,6 +66,12 @@ MyBatis全局配置文件
 		package
 			:name 包名
 MyBatis 映射文件
+	映射文件结构
+		<!DOCTYPE mapper
+		 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		 <mapper namespace="xxx" ></mapper>
+		 文件结构一定要完整 否则会报错
 	MyBatis支持返回 Boolean Integer Long void	
 	
 	MyBatis接口编程步骤
@@ -131,3 +137,25 @@ MyBatis 映射文件
 		返回多条封装一个map Map<Integer,Object> key是这个记录的主键 value是对应的类
 		@MapKey("id") //告诉mybatis使用哪个属性作为map的key
 		public Map<Integer,Employee> getEmployeeByLastNameLikeReturnMap(String lastName);
+	
+	resultMap
+		:type 类名
+		:id 唯一标签
+		id 主键标签
+			:column 对应列名
+			:property 对应的javaBean属性
+		result
+			:column 
+			:property
+	
+	select
+		:resultMap 自定义结果集映射规则 区分大小写
+	联合查询 级联属性 方法
+		1 自定义 resultMap
+		2 resultMap
+			association 
+				:property 属性名
+				:javaType java类型
+				:select 表明当前属性是调用select指定的方法查出结果的
+					流程 使用select指定的方法(传入的column指定的这列参数的值) 查出对象,并封装给property指定的属性
+				:column 要传入的值所属的列名

@@ -1,23 +1,11 @@
 package pojo;
 
-public class Employee {
+public class EmployeePlus {
 	private Integer id;
 	private String lastName;
 	private String email;
 	private String gender;
-	
-	
-	public Employee()
-	{
-		
-	}
-	
-	public Employee(String lastName, String email, String gender) {
-		super();
-		this.lastName = lastName;
-		this.email = email;
-		this.gender = gender;
-	}
+	private Department department;
 	public Integer getId() {
 		return id;
 	}
@@ -42,9 +30,16 @@ public class Employee {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
+	public Department getDepartment() {
+		return department;
+	}
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
 	@Override
 	public String toString() {
-		return "Employee [id=" + id + ", lastName=" + lastName + ", email=" + email + ", gender=" + gender + "]";
+		return "EmployeePlus [id=" + id + ", lastName=" + lastName + ", email=" + email + ", gender=" + gender
+				+ ", department=" + department + "]";
 	}
 	
 	
