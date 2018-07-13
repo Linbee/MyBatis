@@ -147,6 +147,17 @@ MyBatis 映射文件
 		result
 			:column 
 			:property
+		collection 定义集合类型的属性的封装规则 一对多
+			:property  属性名
+			:ofType 属性的类型
+		association  定义类的属性的封装规则 一对一
+			:property 属性名
+			:javaType java类型
+			:select 表明当前属性是调用select指定的方法查出结果的
+					流程 使用select指定的方法(传入的column指定的这列参数的值) 查出对象,并封装给property指定的属性
+			:column 要传入的值所属的列名 {prop1=col1,prop2=col2}
+			:fetch eager 立即
+				   lazy 延迟
 	
 	select
 		:resultMap 自定义结果集映射规则 区分大小写
@@ -159,3 +170,7 @@ MyBatis 映射文件
 				:select 表明当前属性是调用select指定的方法查出结果的
 					流程 使用select指定的方法(传入的column指定的这列参数的值) 查出对象,并封装给property指定的属性
 				:column 要传入的值所属的列名
+	
+		延迟加载 在需要用到某个信息的时候才去查询 节省数据库资源
+		如何设置延迟加载
+			全局配置文件配置 lazyLoadingEnabled true aggressiveLazyLoading false

@@ -286,7 +286,7 @@ public class MyTest {
 		}
 	}
 	
-	
+//分步测试 延迟加载
 	@Test
 	public void testAboutEmployPlusByStep()
 	{
@@ -301,7 +301,7 @@ public class MyTest {
 			
 			EmployeeDao employeeDao = sqlSession.getMapper(EmployeeDao.class);
 			EmployeePlus temp = employeeDao.getEmployeePlusByStep(7);
-			System.out.println(temp);
+			System.out.println(temp.getDepartment());
 			
 		}catch (Exception e) {
 			System.out.println(e);
@@ -310,23 +310,55 @@ public class MyTest {
 			sqlSession.close();
 		}
 	}
+	
+// 鉴别器测试
+	@Test 
+	public void testDiscriminator()
+	{
+		SqlSession sqlSession = getSqlSession();
+		
+		EmployeeDao employeeDao = sqlSession.getMapper(EmployeeDao.class);
+		EmployeePlus temp= employeeDao.getEmployeePlusByStepAndDiscriminator(8);
+		System.out.println(temp);
+	}
 
 // 部门查询测试
 	@Test
 	public void getDepartmentById()
 	{
-		SqlSession sqlSession=getSqlSession();
+
+		String resource="mybatis-config.xml";
 		
+		SqlSession sqlSession = null;
 		try
 		{
+			InputStream inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			sqlSession= sqlSessionFactory.openSession(true);
+			
 			DepartmentDao departmentDao= sqlSession.getMapper(DepartmentDao.class);
-			Department department=departmentDao.getDepartmentById(1);
+			Department department = departmentDao.getDepartmentById(1);
+			
+			System.out.println(department.getDepartmentName());
+			
+			department = departmentDao.getDepartmentPlusById(1);
 			System.out.println(department);
+			
+			department = departmentDao.getDepartmentPlusByIdAndStep(1); //分步查询
+			System.out.println("分步查询 "+department.getDepartmentName());
+			System.out.println("分步查询 "+department.getEmps());
+			
+			EmployeeDao employeeDao = sqlSession.getMapper(EmployeeDao.class);
+			List<EmployeePlus> list= employeeDao.getAllEmployeeBydepartmentId(1);
+			System.out.println(list);
+			
+			
+			
 		}catch (Exception e) {
-			// TODO: handle exception
+			System.out.println(e);
 		}
 		finally {
-			sqlSession.clearCache();
+			sqlSession.close();
 		}
 	}
 }

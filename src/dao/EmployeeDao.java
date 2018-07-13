@@ -40,6 +40,13 @@ public interface EmployeeDao {
 
 //	关联属性 级联查询
 	public EmployeePlus getEmployPlusById(int id);
-	
+//   association的分步查询  一对一
 	public EmployeePlus getEmployeePlusByStep(int id);
+
+//  某部门下的所有员工
+	public List<EmployeePlus> getAllEmployeeBydepartmentId(int dep_id);
+	
+// 鉴别器查询
+	public EmployeePlus getEmployeePlusByStepAndDiscriminator(int id);
+	
 }
