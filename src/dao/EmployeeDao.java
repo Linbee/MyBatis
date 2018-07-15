@@ -49,4 +49,17 @@ public interface EmployeeDao {
 // 鉴别器查询
 	public EmployeePlus getEmployeePlusByStepAndDiscriminator(int id);
 	
+// 动态SQL查询之if
+	public List<Employee> getEmployeeByConditionIf(Employee employee);
+
+// 动态SQL查询之choose
+	public List<Employee> getEmployeeByConditionChoose(Employee employee);
+
+// 动态SQL查询 之 set
+	public void updateEmployeeByDynamic(Employee employee);
+
+// 动态SQL批量保存 foreach
+	public void addEmployeeDynamic(@Param("emps")List<EmployeePlus> employees);
+
+	public List<EmployeePlus> getEmployeeTestInnerParameter(EmployeePlus temp);
 }

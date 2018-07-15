@@ -148,8 +148,14 @@ MyBatis 映射文件
 			:column 
 			:property
 		collection 定义集合类型的属性的封装规则 一对多
-			:property  属性名
-			:ofType 属性的类型
+			:property 属性名
+			:javaType java类型
+			:select 表明当前属性是调用select指定的方法查出结果的
+					流程 使用select指定的方法(传入的column指定的这列参数的值) 查出对象,并封装给property指定的属性
+			:column 要传入的值所属的列名 {prop1=col1,prop2=col2}
+			:fetch eager 立即
+				   lazy 延迟
+	
 		association  定义类的属性的封装规则 一对一
 			:property 属性名
 			:javaType java类型
@@ -158,6 +164,13 @@ MyBatis 映射文件
 			:column 要传入的值所属的列名 {prop1=col1,prop2=col2}
 			:fetch eager 立即
 				   lazy 延迟
+		
+		discriminator 鉴别器 判断某列的值 然后根据某个列的值改变封装行为
+			:column 要判断的列
+			:javaType 列值对应的java类型
+			case
+				:value 列的值
+				:resultType/resultMap 指定封装的结果类型
 	
 	select
 		:resultMap 自定义结果集映射规则 区分大小写
@@ -174,3 +187,50 @@ MyBatis 映射文件
 		延迟加载 在需要用到某个信息的时候才去查询 节省数据库资源
 		如何设置延迟加载
 			全局配置文件配置 lazyLoadingEnabled true aggressiveLazyLoading false
+			
+			
+MyBatis的动态SQL
+	OGNL 会进行字符串和数字的转化
+		特殊符号去写转义字符
+	if
+		:test 使用OGNL语法
+		查询时候可能存在拼装错误
+		解决方法
+			1 where后面加上1=1 以后的条件都是 and xxx 
+			2 使用where 标签
+	where 封装查询条件 搭配使用更佳
+		where 只会去掉多一个 第一个多出来的and/or
+	
+	trim
+		:prefix 前缀 trim标签中是整个字符串拼穿串后的结果
+					 prefix是个拼串后的整个字符串加一个前缀
+		
+		:prefixOverrides 前缀覆盖 去掉整个字符串前面多余的字符
+		
+		:suffix 后缀 给整个字符串加一个后缀
+		:suffixOverrides 后缀覆盖 去掉整个字符串后面多余的字符
+	
+	set 动态更新
+	
+	choose 分支选择
+		when
+		otherwise
+	
+	foreach 遍历传入的元素
+	
+	mybatis 拥有内置的两个参数
+		_parameter 代表整个参数
+			单个参数 _parameter就是这个参数
+			多个参数 参数会被封装成map _parameter就代表这个map
+			
+		_databaseId
+			如果配置了databaseIdProvider标签 _databaseId就代表当前数据库的别名
+
+
+2018 7 14 小计
+mysql的jdbc 使用allowMultiQueries=true 允许使用;来分隔多条语句
+
+
+
+
+

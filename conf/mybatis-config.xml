@@ -10,6 +10,7 @@
 		<setting name="lazyLoadingEnabled" value="true"/> <!-- 开启延迟加载 01 -->
 		<setting name="aggressiveLazyLoading" value=" false"/>  <!-- 开启延迟加载  02-->
 		<setting name="mapUnderscoreToCamelCase" value="true"/> <!-- 开启驼峰命名法 将数据库列名转化为驼峰命名 -->
+		<setting name="cacheEnabled" value="true"/> <!-- 全局开启二级缓存 -->
 	</settings> 
 	
 	<environments default="development">
@@ -30,6 +31,7 @@
 	</databaseIdProvider>
 	
 	<mappers>
+		<mapper resource="pojo/EmployeeDynamicMapper.xml"/>
 		<mapper resource="pojo/EmployeeMapper.xml" />
 		<mapper resource="pojo/EmployeePlusMapper.xml"/>
 		<mapper resource="pojo/DepartmentMapper.xml"/>

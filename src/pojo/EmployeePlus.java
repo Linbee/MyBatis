@@ -1,11 +1,28 @@
 package pojo;
 
-public class EmployeePlus {
+import java.io.Serializable;
+
+public class EmployeePlus implements Serializable {
 	private Integer id;
 	private String lastName;
 	private String email;
 	private String gender;
 	private Department department;
+	
+	
+	public EmployeePlus() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	
+	public EmployeePlus(String lastName, String email, String gender, Department department) {
+		super();
+		this.lastName = lastName;
+		this.email = email;
+		this.gender = gender;
+		this.department = department;
+	}
+
 	public Integer getId() {
 		return id;
 	}

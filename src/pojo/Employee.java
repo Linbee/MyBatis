@@ -1,5 +1,6 @@
 package pojo;
 
+//动态SQL测试
 public class Employee {
 	private Integer id;
 	private String lastName;

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.EmployeeDao">
+
+	<!-- 动态查询if 如果携带了某个字段作为条件就带上那个字段 -->
+	<select id="getEmployeeByConditionIf" resultType="pojo.Employee">
+	
+		<include refid="selectFormTbl_employee"></include> <!-- 抽取sql语句 -->
+		
+		<bind name="likeLastName" value=" '%'+ lastName+'%' "/> <!-- 绑定值  -->
+		<where>
+			<if test="id!=null">
+				id=#{id}
+			</if>
+			<!-- &quot; 双引号 html5的转义字符 &amp; & 的转义符 -->
+			<if test="lastName!=null &amp;&amp; lastName!=&quot;&quot;">
+				and last_name like #{likeLastName}
+			</if>
+			<!-- trim掐头去尾掉空格 -->
+			<if test="email!=null and email.trim()!='' ">
+				and email=#{email}
+			</if>
+			<if test="gender == 0 or gender==1">
+				and gender=#{gender}
+			</if>
+		</where>
+	</select>
+
+	<!-- 动态查询之选择分支 -->
+	<select id="getEmployeeByConditionChoose"
+		resultType="pojo.Employee">
+		<include refid="selectFormTbl_employee"></include>
+		<where>
+			<choose>
+				<when test="id!=null">
+					id=#{id}
+				</when>
+				<when test="lastName!=null">
+					last_name like #{lastName}
+				</when>
+				<when test="email!=null">
+					email =#{email}
+				</when>
+				<otherwise>
+					1=1
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--动态更新 -->
+	<select id="updateEmployeeByDynamic">
+		update tbl_employee
+		<set>
+			<if test="lastName!=null">
+				last_name=#{lastName},
+			</if>
+			<if test="email!=null">
+				email=#{email},
+			</if>
+			<if test="gender!=null">
+				gender=#{gender}
+			</if>
+		</set>
+		where id=#{id}
+	</select>
+
+	<!-- 批量保存 -->
+	<insert id="addEmployeeDynamic02">
+		insert into tbl_employee(last_name,email,gender,dep_id)
+		values
+		<foreach collection="emps" item="emp" separator=",">
+			(#{emp.lastName},#{emp.email},#{emp.gender},#{emp.department.id})
+		</foreach>
+	</insert>
+
+	<insert id="addEmployeeDynamic"> <!--搭配 allowMultiQueries=true jdbc:mysql://localhost:3306/mybatis?allowMultiQueries=true 使用  -->
+		<foreach collection="emps" item="emp" separator=";">
+			insert into
+			tbl_employee(last_name,email,gender,dep_id)
+			values
+			(#{emp.lastName},#{emp.email},#{emp.gender},#{emp.department.id})
+		</foreach>
+	</insert>
+	
+	<!-- 内置参数_databaseId _parameter 测试 -->
+	<select id="getEmployeeTestInnerParameter" resultType="pojo.Employee">
+		<if test=" _databaseId=='mysql' ">
+			select * from tbl_employee
+			<if test="_parameter!=null">
+				where last_name =#{lastName}
+			</if>
+		</if>
+		
+	</select>
+	
+	<sql id="selectFormTbl_employee">
+	 	<if test="_databaseId== 'mysql' ">
+	 		select * from tbl_employee
+	 	</if>
+	</sql>
+</mapper>

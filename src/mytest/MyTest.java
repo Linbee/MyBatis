@@ -2,6 +2,7 @@ package mytest;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ import pojo.EmployeeMapperAnnotation;
 import pojo.EmployeePlus;
 
 public class MyTest {
+
+	private EmployeePlus employPlusById;
 
 	/*
 	 * 根据xml配置文件，创建SqlSessionFactory对象
@@ -193,7 +196,7 @@ public class MyTest {
 			EmployeeDao employeeDao = sqlSession.getMapper(EmployeeDao.class);
 			Map<String,Object> info = new HashMap<>();
 			info.put("tableName","tbl_employee");
-			info.put("id",1);
+			info.put("id",7);
 			Employee temp = employeeDao.getEmployeeByIdAndTableName(info);
 			System.out.println(temp);
 			
@@ -359,6 +362,102 @@ public class MyTest {
 		}
 		finally {
 			sqlSession.close();
+		}
+	}
+
+//动态SQL测试
+	@Test
+	public void testDynamicSQL()
+	{
+		SqlSession session =getSqlSession();
+		try
+		{
+			
+			EmployeeDao employeeDao = session.getMapper(EmployeeDao.class);
+			Employee test = new Employee();
+			test.setLastName("t");
+			
+			List<Employee> list = employeeDao.getEmployeeByConditionIf(test); //if test
+			System.out.println(list);
+			
+			
+			/*list = employeeDao.getEmployeeByConditionChoose(new Employee()); // choose test
+			System.out.println(list);
+			
+			test.setId(7);
+			test.setLastName("sbbb");
+			test.setEmail("sbbb@mail.com");
+			employeeDao.updateEmployeeByDynamic(test);*/
+			
+			List<EmployeePlus> testInsert = new ArrayList<EmployeePlus>(); //批量添加
+			/*testInsert.add(new EmployeePlus("Tiny", "tiny@mail.com", "0", new Department(1)));
+			testInsert.add(new EmployeePlus("Funy", "Funy@mail.com", "1", new Department(2)));
+			employeeDao.addEmployeeDynamic(testInsert);*/
+			
+/*			testInsert.clear();
+			EmployeePlus temp=null;
+			//temp.setLastName("Tiny");
+			testInsert=employeeDao.getEmployeeTestInnerParameter(temp);
+			System.out.println(testInsert);*/
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
+		finally
+		{
+			session.close();
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	/**
+	 * 
+	 */
+	/**
+	 * 
+	 */
+	@Test
+	public void testCache()
+	{
+		//firstCache
+		SqlSession session = getSqlSession();
+		try
+		{
+			EmployeeDao employeeDao=session.getMapper(EmployeeDao.class);
+			EmployeePlus temp= employeeDao.getEmployPlusById(7);
+			System.out.println(temp);
+			
+			
+			EmployeePlus temp02= employeeDao.getEmployPlusById(7);
+			System.out.println(temp02);
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
+		finally {
+			session.close();
+		}
+		
+		//second cache
+		try {
+			SqlSession session01 = getSqlSession();
+			SqlSession session02 = getSqlSession();
+			
+			EmployeeDao employeeDao01=session01.getMapper(EmployeeDao.class);
+			EmployeePlus temp = employeeDao01.getEmployPlusById(8);
+			System.out.println(temp);
+			session01.close();
+			
+			
+			EmployeeDao employeeDao02 = session02.getMapper(EmployeeDao.class);
+			session02.close();
+		}catch (Exception e) {
+			// TODO: handle exception
+		} 
+		finally {
+			// TODO: handle finally clause
 		}
 	}
 }

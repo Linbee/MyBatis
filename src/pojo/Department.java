@@ -1,12 +1,22 @@
 package pojo;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Department {
+public class Department  implements Serializable {
 	int id;
 	String departmentName;
 	List<EmployeePlus> emps;
 	
+	
+	
+	public Department() {
+		super();
+	}
+	public Department(int id) {
+		super();
+		this.id = id;
+	}
 	public int getId() {
 		return id;
 	}
