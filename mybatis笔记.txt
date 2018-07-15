@@ -218,6 +218,18 @@ MyBatis的动态SQL
 	
 	foreach 遍历传入的元素
 	
+	bind 将OGNL表达式的值绑定到一个变量中,方便后来引用这个变量的值
+		:name
+		:value
+		
+		
+	sql 抽取可重用的sql片段 方便后面引用
+	
+	include 引用sql片段
+		include 还可以自定义一些property sql标签内部就可以使用自定义的属性
+		取值的正确方式${} 
+	
+	
 	mybatis 拥有内置的两个参数
 		_parameter 代表整个参数
 			单个参数 _parameter就是这个参数
@@ -225,12 +237,65 @@ MyBatis的动态SQL
 			
 		_databaseId
 			如果配置了databaseIdProvider标签 _databaseId就代表当前数据库的别名
-
+		
+		eg <if test="_databaseId==mysql">
+			select * from tbl_employee
+				<if test="_parameter!=null">
+					where last_name =#{lastName}
+				</if>
+		   </if>
 
 2018 7 14 小计
 mysql的jdbc 使用allowMultiQueries=true 允许使用;来分隔多条语句
 
+MyBatis的缓存机制
+	提升查询效率
+	
+	默认定义两级缓存
+	一级缓存  本地缓存 
+		默认一直开启
+		与数据库同一次会话期间查询到的数据会放在本体缓存中
+		
+		一级缓存失效的情况
+			1 sqlsession不同
+			2 sqlsession相同 但是查询条件不同
+			3 sqlsession相同 在两次查询之间 进行了增删改操作
+			4 sqlsession相同 手动清除缓存
+	
+	二级缓存 全局缓存 基于namespace级别的缓存 一个namespac对应一个二级缓存
+		工作机制
+			1 一个会话 查询一条数据 这个数据会被放在当前会话的一级缓存中
+			2 如果会话关闭 一级缓存中的数据会被保存到二级缓存中 新的会话查询信息 就可以参照二级缓存
+			3 不同的namespace查出的数据会放在自己对应的缓存中(map)
 
+		使用
+			1 开启全局二级缓存配置 settings	
+			2 去mapper.xml中配置使用二级缓存 <cache></cache>
+			cache
+				:eviction 缓存的回收策略
+					LRU 最近最少使用 移除最长时间不被使用的对象
+					FIFO 先进先出
+					SOFT 软引用 移除基于垃圾回收器状态和软引用规则的对象
+					WEAK 弱引用 更积极地移除基于垃圾回收器状态和软引用规则的对象
+					默认LRU
+				:flushInterval 缓存刷新间隔 毫秒级别
+					默认不清空
+				:readOnly 是否只读
+					true mybaits认为所有从缓存中获取数据的操作都是只读操作,不会修改数据
+					false 非只读 mybaits认为数据可能被修改 会利用序列化和反序列化技术克隆一份数据给你 安全 速度慢
+				:size 缓存存放多少个元素
+				:type 指定自定义的缓存的全类名 
+						实现Cache接口
 
-
-
+			pojo需要实现序列化接口
+			
+	和缓存有关的设置
+		1 cacheEnablee=true false 关闭缓存 二级缓存关闭 但一级缓存可用
+		2 每个select标签都有useCache="true/false" 不使用缓存 一级缓存还是可用
+		3 每个增删改标签的 默认flushCache="true" 清空一二级缓存
+			查询标签 默认flushCache="false" 默认不清除
+		4 sqlSession.clearCace() 只是清楚当前session的一级缓存
+		5 localCacheScope本地缓存作用域
+			一级缓存SESSION 当前会话的所有数据保存在会话缓存中;
+			STATEMENT 可以禁用一级缓存
+		
